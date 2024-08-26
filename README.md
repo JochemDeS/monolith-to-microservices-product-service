@@ -20,6 +20,13 @@ naar [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger
 
 Er is geen authenticatie vereist om de endpoints te gebruiken.
 
-## Implementeren
+## Implementeren microservice
 
-Indien je wilt weten hoe deze product service tot stand is gekomen, kan je de volgende stappen volgen:
+De volgende stappen zijn genomen om deze microservice te implementeren:
+
+1. **Kopiëren bestaande product functionaliteit**
+
+    Doordat ik gebruik heb gemaakt van de hexagonale architectuur in de monolithische applicatie, was het eenvoudig om de product functionaliteit
+    te kopiëren naar een nieuwe microservice. De product functionaliteit was al gescheiden van de rest van de applicatie.
+
+2. **Toevoegen Spring Boot dependencies**

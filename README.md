@@ -1,32 +1,61 @@
 # Product service
 
-De product service is een microservice die verantwoordelijk is voor het beheren van producten in de webshop. De service biedt endpoints 
-voor het opvragen van producten.
+De Product Service is een microservice die verantwoordelijk is voor het beheer van producten binnen de webshop. 
+Deze service biedt API-endpoints voor het opvragen, filteren, en sorteren van producten, evenals het opvragen van specifieke producten 
+op basis van hun product-ID.
 
 ## Functionaliteiten
 
-- Producten opvragen
-- Producten filteren op:
-  - categorie
-  - merk
-  - minimum- en maximumprijs
-- Producten sorteren
-- Specifiek product opvragen op basis van product ID
+- **Producten opvragen**
+- **Producten filteren op:**
+  - Categorie
+  - Merk
+  - Minimum- en maximumprijs
+- **Producten sorteren**
+- **Specifiek product opvragen op basis van product ID**
 
 ## API Spec
 
-Je kan de API specificatie bekijken in de Swagger UI door de applicatie te starten en 
-naar [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html) te navigeren.
+De API-specificatie is te bekijken via de Swagger UI. Start de applicatie en navigeer naar [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html).
 
-Er is geen authenticatie vereist om de endpoints te gebruiken.
+Voor het gebruik van de endpoints is geen authenticatie vereist.
 
 ## Implementeren microservice
 
-De volgende stappen zijn genomen om deze microservice te implementeren:
+De implementatie van deze microservice is uitgevoerd in de volgende stappen:
 
-1. **Kopiëren bestaande product functionaliteit**
+### 1. Kopiëren bestaande productfunctionaliteit
 
-    Doordat ik gebruik heb gemaakt van de hexagonale architectuur in de monolithische applicatie, was het eenvoudig om de product functionaliteit
-    te kopiëren naar een nieuwe microservice. De product functionaliteit was al gescheiden van de rest van de applicatie.
+Dankzij de toepassing van de hexagonale architectuur in de monolithische applicatie, was het eenvoudig om de productfunctionaliteit 
+over te zetten naar een nieuwe microservice. De productfunctionaliteit was al goed gescheiden van de rest van de applicatie.
 
-2. **Toevoegen Spring Boot dependencies**
+### Applicatie configuratie
+
+Het is belangrijk om in de `src/main/resources/application.yml` in te stellen dat de microservice op een andere poort draait dan de monolithische applicatie.
+De microservice draait momenteel op poort 8081.
+
+### Database configuratie
+
+De Product Service maakt gebruik van een eigen database, wat vereist dat een nieuwe database wordt aangemaakt.
+
+1. **Database aanmaken:** Kopieer het `docker-compose.yml` bestand uit de monolithische applicatie en pas de poort aan naar **5433**, 
+omdat elke microservice zijn eigen database nodig heeft die op een andere poort draait. De database-URL is `jdbc:postgresql://localhost:5433/postgres`.
+2. **Configuratie:** Zorg ervoor dat de databaseconfiguratie in het `application.yml` bestand in de `src/main/resources` map overeenkomt met de 
+nieuwe database-instellingen.
+3. **Docker:** Zorg ervoor dat Docker Desktop draait. Navigeer naar de root van het project in de terminal en voer het volgende commando uit:
+    ```shell
+    docker compose up -d
+    ```
+4. **Database schema's migreren:** Kopieer de Flyway-migratiebestanden (migraties 1 tot 6) vanuit de monolithische applicatie naar de 
+`src/main/resources/db/migration` map van de microservice.
+5. **Schema's toepassen:** Start de applicatie om de schema's automatisch aan de nieuwe database toe te voegen.
+
+### Proxy/API-Gateway configuratie
+
+Nu de microservice operationeel is, moet je je proxy of API-gateway configureren om de microservice aan te roepen in plaats van de monolithische applicatie.
+
+## Conclusie
+
+Het opsplitsen van de productfunctionaliteiten uit de monolithische applicatie verliep efficiënt en snel. Deze microservice kan nu 
+volledig onafhankelijk opereren van de oorspronkelijke monolithische applicatie.
+

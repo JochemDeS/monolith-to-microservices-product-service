@@ -50,12 +50,13 @@ nieuwe database-instellingen.
 `src/main/resources/db/migration` map van de microservice.
 5. **Schema's toepassen:** Start de applicatie om de schema's automatisch aan de nieuwe database toe te voegen.
 
+### Inter-servicecommunicatie opzetten
+
+Om de microservice te integreren met de monolithische applicatie, moet de inter-servicecommunicatie worden opgezet. 
+Dit wil zeggen dat andere microservices in staat zijn om data op te vragen van de microservice.
+
+Hiervoor heb ik een extra endpoint toegevoegd dat een lijst van product ID's accepteert en de bijbehorende producten teruggeeft.
+
 ### Proxy/API-Gateway configuratie
 
 Nu de microservice operationeel is, moet je je proxy of API-gateway configureren om de microservice aan te roepen in plaats van de monolithische applicatie.
-
-## Conclusie
-
-Het opsplitsen van de productfunctionaliteiten uit de monolithische applicatie verliep efficiënt en snel. Deze microservice kan nu 
-volledig onafhankelijk opereren van de oorspronkelijke monolithische applicatie.
-

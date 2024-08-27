@@ -60,3 +60,7 @@ Hiervoor heb ik een extra endpoint toegevoegd dat een lijst van product ID's acc
 ### Proxy/API-Gateway configuratie
 
 Nu de microservice operationeel is, moet je je proxy of API-gateway configureren om de microservice aan te roepen in plaats van de monolithische applicatie.
+
+## Implementeer de User service
+
+Ga naar de user-service repository om de user-service verder uit te werken: [User Service](https://github.com/jochemdeschepper/monolith-to-microservices-user-service)

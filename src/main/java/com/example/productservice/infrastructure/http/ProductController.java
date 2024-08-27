@@ -1,5 +1,7 @@
 package com.example.productservice.infrastructure.http;
 
+import com.example.productservice.application.GetAllProductsUseCase;
+import com.example.productservice.application.GetProductsByIdInUseCase;
 import com.example.productservice.application.ProductRequest;
 import com.example.productservice.application.common.UseCase;
 import com.example.productservice.domain.Product;
@@ -10,18 +12,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/products")
 @Tag(name = "Product", description = "All endpoints for the product")
 public class ProductController {
-    private final UseCase<ProductRequest, Page<Product>> getAllProductsUseCase;
-    private final UseCase<ProductId, Product> getProductByIdUseCase;
+    private final GetAllProductsUseCase getAllProductsUseCase;
+    private final GetProductsByIdInUseCase getProductsByIdInUseCase;
 
-    public ProductController(UseCase<ProductRequest, Page<Product>> getAllProductsUseCase,
-                             UseCase<ProductId, Product> getProductByIdUseCase) {
+    public ProductController(GetAllProductsUseCase getAllProductsUseCase,
+                             GetProductsByIdInUseCase getProductsByIdInUseCase) {
         this.getAllProductsUseCase = getAllProductsUseCase;
-        this.getProductByIdUseCase = getProductByIdUseCase;
+        this.getProductsByIdInUseCase = getProductsByIdInUseCase;
     }
 
     @PostMapping
@@ -46,14 +50,19 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/{id}")
-    public ProductDetailReadModel getProduct(@PathVariable String id) {
-        final var productId = ProductId.builder()
-                .value(Long.parseLong(id))
-                .build();
+    @GetMapping
+    public List<ProductDetailReadModel> getProduct(@RequestParam List<Integer> ids) {
+        final var productIds = ids.stream()
+                .map(id -> ProductId.builder()
+                    .value((long) id)
+                    .build())
+                .toList();
 
-        final var product = getProductByIdUseCase.handle(productId);
-        return mapToProductDetailModel(product);
+        final var products = getProductsByIdInUseCase.handle(productIds);
+
+        return products.stream()
+                .map(this::mapToProductDetailModel)
+                .toList();
     }
 
     private ProductReadModel mapToProductReadModel(Product product) {

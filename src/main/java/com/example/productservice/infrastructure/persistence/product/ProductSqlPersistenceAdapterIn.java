@@ -2,7 +2,7 @@ package com.example.productservice.infrastructure.persistence.product;
 
 
 import com.example.productservice.application.GetAllProductsPort;
-import com.example.productservice.application.GetProductByIdPort;
+import com.example.productservice.application.GetProductByIdInPort;
 import com.example.productservice.application.ProductRequest;
 import com.example.productservice.domain.Product;
 import com.example.productservice.domain.ProductId;
@@ -11,14 +11,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.List;
 
 
 @Component
-public class ProductSqlPersistenceAdapter implements GetAllProductsPort, GetProductByIdPort {
+public class ProductSqlPersistenceAdapterIn implements GetAllProductsPort, GetProductByIdInPort {
     private final ProductRepository productRepository;
 
-    public ProductSqlPersistenceAdapter(ProductRepository productRepository) {
+    public ProductSqlPersistenceAdapterIn(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -31,7 +31,13 @@ public class ProductSqlPersistenceAdapter implements GetAllProductsPort, GetProd
     }
 
     @Override
-    public Optional<Product> byId(ProductId id) {
-        return productRepository.findById(id.value()).map(ProductMapper::toDomain);
+    public List<Product> byIdIn(List<ProductId> ids) {
+        final var productIds = ids.stream()
+                .map(ProductId::value)
+                .toList();
+
+        return productRepository.findAllByIdIn(productIds).stream()
+                .map(ProductMapper::toDomain)
+                .toList();
     }
 }
